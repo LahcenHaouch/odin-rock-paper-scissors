@@ -33,32 +33,24 @@ function getComputerChoice() {
  * @returns {string}
  */
 function playRound(playerSelection, computerSelection) {
-  const pSelection = playerSelection.toLowerCase();
-  const cSelection = computerSelection.toLowerCase();
-
-  if (!CARD_KEYS.includes(pSelection)) {
-    throw new Error(`You must enter a valid CARD!
-    Entered CARD: ${pSelection}
-    Valid CARDS: ${CARD_KEYS.join(" | ")}`);
-  }
-  if (pSelection === cSelection) {
+  if (playerSelection === computerSelection) {
     return `Draw!`;
   } else {
-    const { beats: playerBeats } = CARDS[pSelection];
-    if (playerBeats === cSelection) {
-      return `You Win! ${capitalize(pSelection)} beats ${capitalize(
-        cSelection
+    const { beats: playerBeats } = CARDS[playerSelection];
+    if (playerBeats === computerSelection) {
+      return `You Win! ${capitalize(playerSelection)} beats ${capitalize(
+        computerSelection
       )}`;
     } else {
-      return `You Lose! ${capitalize(cSelection)} beats ${capitalize(
-        pSelection
+      return `You Lose! ${capitalize(computerSelection)} beats ${capitalize(
+        playerSelection
       )}`;
     }
   }
 }
 
 function playGame() {
-  const rounds = 3;
+  const rounds = 5;
   const score = [0, 0];
   let playerChoice;
 
