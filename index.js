@@ -64,8 +64,14 @@ function playGame() {
 
   for (let i = 0; i < rounds; i++) {
     do {
-      playerChoice = window.prompt("Please enter a card", "").toLowerCase();
+      playerChoice = window.prompt("Please enter a card", "");
+
+      if (playerChoice === null) {
+        return;
+      }
     } while (!CARD_KEYS.includes(playerChoice));
+
+    playerChoice = playerChoice.toLowerCase();
     const computerChoice = getComputerChoice();
 
     const result = playRound(playerChoice, computerChoice);
