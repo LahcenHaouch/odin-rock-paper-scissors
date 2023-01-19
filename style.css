@@ -78,3 +78,10 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+/* Custom css */
+
+body {
+  background-color: hsl(210deg 30% 8%);
+  color: hsl(0deg 0% 100%);
+}
