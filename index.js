@@ -51,7 +51,7 @@ function playRound(playerSelection, computerSelection) {
 
 function playGame() {
   const rounds = 5;
-  const score = [0, 0];
+  const [playerScore, computerScore] = [0, 0];
   let playerChoice;
 
   for (let i = 0; i < rounds; i++) {
@@ -61,7 +61,7 @@ function playGame() {
       if (playerChoice === null) {
         return;
       }
-    } while (!CARD_KEYS.includes(playerChoice));
+    } while (!CARDS[playerChoice]);
 
     playerChoice = playerChoice.toLowerCase();
     const computerChoice = getComputerChoice();
@@ -69,15 +69,15 @@ function playGame() {
     const result = playRound(playerChoice, computerChoice);
 
     if (result === "Draw") {
-      score[0]++;
-      score[1]++;
+      playerScore++;
+      computerScore++;
     } else if (result.includes("Win")) {
-      score[0]++;
+      playerScore++;
     } else {
-      score[1]++;
+      computerScore++;
     }
   }
-  const [playerScore, computerScore] = score;
+
   console.log(score);
   if (playerScore === computerScore) {
     console.log("DRAW");
