@@ -10,7 +10,14 @@ const CARDS = {
   },
 };
 
+const game = {
+  status: 'idle'
+}
+
 const CARD_KEYS = Object.keys(CARDS);
+
+const scoreElement = document.querySelector('#score');
+const playElement = document.querySelector("#play");
 
 /**
  * @param {string} str
@@ -25,6 +32,26 @@ function capitalize(str) {
  */
 function getComputerChoice() {
   return CARD_KEYS[Math.floor(Math.random() * CARD_KEYS.length)];
+}
+
+function createChoice(choice) {
+  const choiceElement = document.createElement('button');
+
+  choiceElement.classList.add('playerChoice');
+  choiceElement.dataset.playerChoice = choice;
+  choiceElement.textContent = capitalize(choice);
+
+  return choiceElement;
+}
+
+function renderPlayerChoices() {
+  const buttonListElement = document.querySelector('#button-list');
+
+  CARD_KEYS.forEach(choice => buttonListElement.appendChild(createChoice(choice)));
+}
+
+function removePlayerChoices() {
+  document.querySelectorAll('.playerChoice').forEach(element => element.remove());
 }
 
 /**
@@ -49,21 +76,25 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-function playGame() {
-  const rounds = 5;
-  const [playerScore, computerScore] = [0, 0];
+function getPlayerChoice() {
+  return new Promise(resolve => {
+    document.querySelectorAll('.playerChoice').forEach(element => {
+      element.addEventListener('click', event => resolve(event.currentTarget.dataset.playerChoice));
+    });
+  });
+}
+
+async function playGame() {
+  game.status = 'started';
+  playElement.textContent = 'Restart?';
+
+  let [playerScore, computerScore] = [0, 0];
   let playerChoice;
 
-  for (let i = 0; i < rounds; i++) {
-    do {
-      playerChoice = window.prompt("Please enter a card", "");
+  renderPlayerChoices();
 
-      if (playerChoice === null) {
-        return;
-      }
-    } while (!CARDS[playerChoice]);
-
-    playerChoice = playerChoice.toLowerCase();
+  while (playerScore < 5 && computerScore < 5) {
+    playerChoice = await getPlayerChoice();
     const computerChoice = getComputerChoice();
 
     const result = playRound(playerChoice, computerChoice);
@@ -76,16 +107,24 @@ function playGame() {
     } else {
       computerScore++;
     }
+
+    scoreElement.textContent = `Score: [ Player: ${playerScore} | Computer: ${computerScore} ]`;
+    playerChoice = null;
   }
 
-  console.log(score);
   if (playerScore === computerScore) {
-    console.log("DRAW");
+    scoreElement.textContent += ' => DRAW';
   } else if (playerScore > computerScore) {
-    console.log("WINNER");
+    scoreElement.textContent += ' => YOU WIN!';
   } else {
-    console.log("GAME OVER");
+    scoreElement.textContent += ' => GAME OVER';
   }
+
+  game.status = 'finished';
+  removePlayerChoices();
 }
 
-document.querySelector("#play").addEventListener("click", () => playGame());
+playElement.addEventListener("click", () => playGame());
+
+
+// Case retry/replay game
